@@ -1,7 +1,6 @@
 package test;
 
 import data.DataHelper;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import page.DashboardPage;
@@ -9,6 +8,7 @@ import page.LoginPage;
 
 import static com.codeborne.selenide.Selenide.open;
 import static data.DataHelper.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 
@@ -17,9 +17,14 @@ public class MoneyTransferTest {
     DashboardPage dashboardPage;
 
     @BeforeEach
-    void setup() {
-        open("http://localhost:9999");
+    void setup () {
+        var loginPage = open("http://localhost:9999", LoginPage.class);
+        var authInfo = getAuthInfo();
+        var verificationPage = loginPage.validLogin(authInfo);
+        var verificationCode = getVerificationCodeFor(authInfo);
+        dashboardPage = verificationPage.validVerify(verificationCode);
     }
+
 
 
     @Test
@@ -36,8 +41,8 @@ public class MoneyTransferTest {
         transferPage.transferMoney(amount, getSecondCardNumber());
         var expectedFirstCardBalanceAfter = firstCardBalance + amount;
         var expectedSecondCardBalanceAfter = secondCardBalance - amount;
-        Assertions.assertEquals(expectedFirstCardBalanceAfter, dashboardPage.getCardBalance(getFirstCardNumber().getCardNumber()));
-        Assertions.assertEquals(expectedSecondCardBalanceAfter, dashboardPage.getCardBalance(getSecondCardNumber().getCardNumber()));
+        assertEquals(expectedFirstCardBalanceAfter, dashboardPage.getCardBalance(getFirstCardNumber().getCardNumber()));
+        assertEquals(expectedSecondCardBalanceAfter, dashboardPage.getCardBalance(getSecondCardNumber().getCardNumber()));
     }
 
 
