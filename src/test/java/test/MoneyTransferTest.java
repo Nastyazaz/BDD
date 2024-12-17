@@ -43,7 +43,6 @@ public class MoneyTransferTest {
 
     @Test
     void shouldGetErrorMessageIfAmountMoreBalance() {
-        var dashboardPage = verificationPage.validVerify(verificationCode);
         var secondCardBalance = dashboardPage.getCardBalance(getSecondCardNumber().getCardNumber());
         var transferPage = dashboardPage.depositToFirstCard();
         int amount = DataHelper.generateInvalidAmount(secondCardBalance);
